@@ -1,18 +1,23 @@
 device: cpu
 train:
   batch_size: 128
-  train_epochs: 1000
+  train_epochs: 90
   loss:
     - bceloss
     - regularizationloss
   optim:
     name: adam
-    learning_rate: 0.0001
-    others: 
-  alpha: 0.01
+    learning_rate: 0.001
+    others:
+  lr_scheduler:
+    name: steplr
+    others:
+      step_size: 30
+      gamma: 0.1
+  alpha: 0.0005
   model_path: ./pretrained
   progress_path: ./train_progress
-  plot_epochs: 5
+  plot_epochs: 10
 model:
   architecture:
     encoder:
@@ -78,4 +83,5 @@ model:
           padding: 1
       - Sigmoid:
 test:
-  batch_size: 128
+  batch_size: 256
+  model_path: ./test/pretrained/model_90.pt

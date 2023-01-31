@@ -1,8 +1,10 @@
 import argparse
+import collections
 
 import yaml
 import torch
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 
 from models import Model
 from utils import get_test_dataset, get_dataloader
@@ -22,26 +24,45 @@ def test(args, cfg):
     ########################
     # Get pretrained model #
     ########################
-    model = Model(model_cfg).to(device)
-    checkpoint = torch.load(args.pretrained)
+    model = Model(model_cfg, device).to(device)
+    if args.pretrained:
+        checkpoint = torch.load(args.pretrained, map_location=device)
+    else:
+        checkpoint = torch.load(test_cfg['model_path'], map_location=device)
     model.load_state_dict(checkpoint['model_state_dict'])
 
     test_dataset = get_test_dataset()
     test_loader = get_dataloader(test_dataset, batch_size, train=False)
+    origin_images = collections.defaultdict(list)
+    generated_images = collections.defaultdict(list)
     
     ########################
-    #      Test model     #
+    #      Test model      #
     ########################
-    for input, target in test_loader:
-        input, target = input.to(device), target.to(device)
-        output = model(input)
+    for inputs, targets in test_loader:
+        inputs, targets = inputs.to(device), targets.to(device)
+        with torch.no_grad():
+            outputs = model(inputs)
+        
+        for idx, target in enumerate(targets):
+            origin_images[int(target)].append(inputs[idx].detach().cpu().numpy()[0])
+            generated_images[int(target)].append(outputs[idx].detach().cpu().numpy()[0])
         break
-    plt.imshow(input[6].detach().numpy().transpose(1, 2, 0), cmap='gray')
-    plt.show()
-    plt.imshow(output[6].detach().numpy().transpose(1, 2, 0), cmap='gray')
-    plt.show()
-    
 
+    plt.subplots_adjust(hspace=0.2, wspace=0.2)
+    plt.figure(figsize=(5, 10))
+    for row in range(10):
+        for column in range(10):
+            origin_image = origin_images[row][column]
+            generate_image = generated_images[row][column]
+            plt.subplot(20, 10, 20*row+column+1)
+            plt.axis('off')
+            plt.imshow(origin_image, cmap='gray')
+            plt.subplot(20, 10, 20*row+column+11)
+            plt.axis('off')
+            plt.imshow(generate_image, cmap='gray')
+    plt.savefig('./result.png')
+    plt.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

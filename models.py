@@ -44,7 +44,7 @@ class Model(nn.Module):
         return self.output
 
     def add_noise(self, mean, std):
-        noise = torch.normal(0, 1, size=std.shape)
+        noise = torch.normal(0, 1, size=std.shape, device=self.device)
         return mean + std * noise
 
 # if __name__ == '__main__':

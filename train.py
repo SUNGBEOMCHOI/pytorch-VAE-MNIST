@@ -20,7 +20,7 @@ def train(args, cfg):
     train_epochs = train_cfg['train_epochs']
     loss_name_list = train_cfg['loss']
     optim_cfg = train_cfg['optim']
-    # lr_scheduler_cfg = train_cfg['lr_scheduler']
+    lr_scheduler_cfg = train_cfg['lr_scheduler']
     alpha = train_cfg['alpha']
     model_path = train_cfg['model_path']
     progress_path = train_cfg['progress_path']
@@ -41,7 +41,7 @@ def train(args, cfg):
     criterion_list = loss_func(loss_name_list)
     reconstruction_criterion, regularization__criterion = criterion_list
     optimizer = optim_func(model, optim_cfg)
-    # lr_scheduler = lr_scheduler_func(optimizer, lr_scheduler_cfg)
+    lr_scheduler = lr_scheduler_func(optimizer, lr_scheduler_cfg)
     history = {'train':[], 'validation':[]} # for saving loss
     start_epoch = 1
 
@@ -54,7 +54,7 @@ def train(args, cfg):
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optim_state_dict'])
         history = checkpoint['history']
-        # lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
+        lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
 
 
     ########################
@@ -82,10 +82,10 @@ def train(args, cfg):
         validation_loss = validation(model, valid_loader, criterion_list, alpha, device)
         history['validation'].append(validation_loss)
         print(f'------ {epoch:03d} training ------- train loss : {total_loss:.6f} -------- validation loss : {validation_loss:.6f} -------')
-        if (epoch-1) % plot_epochs == 0:
+        if epoch % plot_epochs == 0:
             plot_progress(history, epoch, progress_path)
-            save_model(epoch, model, optimizer, history, model_path)
-        # lr_scheduler.step()
+            save_model(epoch, model, optimizer, history, lr_scheduler, model_path)
+        lr_scheduler.step()
 
 def validation(model, validation_loader, criterion_list, alpha, device):
     total_loss = 0.0

@@ -79,7 +79,7 @@ def lr_scheduler_func(optimizer, cfg):
         lr_scheduler
     """
     scheduler_name = cfg['name'].lower()
-    others = cfg['others']
+    others = cfg['others'] if cfg['others'] else {}
     if scheduler_name == 'steplr':
         lr_scheduler = optim.lr_scheduler.StepLR(optimizer, **others)
     elif scheduler_name == 'multisteplr':
@@ -114,6 +114,7 @@ def plot_progress(history, epoch, file_path='./train_progress'):
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.savefig(f'{file_path}/{epoch}epochs.png')
+    plt.close()
 
 class Builder(object):
     def __init__(self, *namespaces):
@@ -169,7 +170,7 @@ def build_network(architecture, builder=Builder(torch.nn.__dict__)):
         layers.append(builder(name, *args, **kwargs))
     return torch.nn.Sequential(*layers)
 
-def save_model(epoch, model, optimizer, history, file_path='./pretrained'):
+def save_model(epoch, model, optimizer, history, lr_scheduler, file_path='./pretrained'):
     """
     Save training ckeckpoint
 
@@ -185,6 +186,7 @@ def save_model(epoch, model, optimizer, history, file_path='./pretrained'):
         'model_state_dict' : model.state_dict(),
         'optimizer_state_dict' : optimizer.state_dict(),
         'history' : history,
+        'lr_scheduler' : lr_scheduler.state_dict(),
         }, f'{file_path}/model_{epoch}.pt')
 
 def get_train_dataset():
