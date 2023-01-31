@@ -1,0 +1,81 @@
+device: cpu
+train:
+  batch_size: 128
+  train_epochs: 1000
+  loss:
+    - bceloss
+    - regularizationloss
+  optim:
+    name: adam
+    learning_rate: 0.0001
+    others: 
+  alpha: 0.01
+  model_path: ./pretrained
+  progress_path: ./train_progress
+  plot_epochs: 5
+model:
+  architecture:
+    encoder:
+      conv:
+        - Conv2d:
+            args: [1, 16]
+            kernel_size: 4
+            stride: 2
+            padding: 1
+        - BatchNorm2d:
+            args: [16]
+        - ReLU:
+        - Conv2d:
+            args: [16, 32]
+            kernel_size: 4
+            stride: 2
+            padding: 1
+        - BatchNorm2d:
+            args: [32]
+        - ReLU:
+        - Conv2d:
+            args: [32, 32]
+            kernel_size: 5
+            stride: 2
+        - BatchNorm2d:
+            args: [32]
+        - ReLU:
+        - Flatten:
+      mean:
+        - Linear:
+            args: [128, 32]
+        - ReLU:
+        - Linear:
+            args: [32, 4]
+      std:
+        - Linear:
+            args: [128, 32]
+        - ReLU:
+        - Linear:
+            args: [32, 4]
+    decoder:
+      - Linear:
+          args: [4, 32]
+      - ReLU:
+      - Linear:
+          args: [32, 128]
+      - Unflatten:
+          args: [1]
+          unflattened_size : [32, 2, 2]
+      - ConvTranspose2d:
+          args: [32, 32]
+          kernel_size: 5
+          stride: 2
+      - ConvTranspose2d:
+          args: [32, 16]
+          kernel_size: 4
+          stride: 2
+          padding: 1
+      - ConvTranspose2d:
+          args: [16, 1]
+          kernel_size: 4
+          stride: 2
+          padding: 1
+      - Sigmoid:
+test:
+  batch_size: 128
