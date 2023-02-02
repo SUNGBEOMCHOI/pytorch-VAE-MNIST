@@ -2,6 +2,7 @@ import argparse
 import collections
 
 import yaml
+import numpy as np
 import torch
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
@@ -42,8 +43,7 @@ def test(args, cfg):
     for inputs, targets in test_loader:
         inputs, targets = inputs.to(device), targets.to(device)
         with torch.no_grad():
-            # outputs = model(inputs)
-            mean, _ = model.encoding(inputs)
+            mean, log_var = model.encoding(inputs)
             outputs = model.decoding(mean)
         
         for idx, target in enumerate(targets):
@@ -63,8 +63,23 @@ def test(args, cfg):
             plt.subplot(20, 10, 20*row+column+11)
             plt.axis('off')
             plt.imshow(generate_image, cmap='gray')
-    plt.savefig('./result.png')
+    plt.savefig('./reconstruction.png')
     plt.close()
+
+    mean = torch.randn((100, 16), device=device)
+    with torch.no_grad():
+        outputs = model.decoding(mean)
+    plt.subplots_adjust(hspace=0.2, wspace=0.2)
+    plt.figure(figsize=(5, 5))
+    for row in range(10):
+        for column in range(10):
+            image = outputs[10*row+column].detach().cpu().numpy()[0]
+            plt.subplot(10, 10, 10*row+column+1)
+            plt.axis('off')
+            plt.imshow(image, cmap='gray')
+    plt.savefig('./random generation.png')
+    plt.close()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -14,10 +14,10 @@ train:
     others:
       step_size: 30
       gamma: 0.1
-  alpha: 0.0005
+  alpha: 0.1
   model_path: ./pretrained
   progress_path: ./train_progress
-  plot_epochs: 30
+  plot_epochs: 10
 model:
   architecture:
     encoder:
@@ -48,22 +48,22 @@ model:
         - Flatten:
       mean:
         - Linear:
-            args: [128, 32]
+            args: [128, 64]
         - ReLU:
         - Linear:
-            args: [32, 2]
+            args: [64, 16]
       std:
         - Linear:
-            args: [128, 32]
+            args: [128, 64]
         - ReLU:
         - Linear:
-            args: [32, 2]
+            args: [64, 16]
     decoder:
       - Linear:
-          args: [2, 32]
+          args: [16, 64]
       - ReLU:
       - Linear:
-          args: [32, 128]
+          args: [64, 128]
       - Unflatten:
           args: [1]
           unflattened_size : [32, 2, 2]
