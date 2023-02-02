@@ -17,7 +17,7 @@ train:
   alpha: 0.0005
   model_path: ./pretrained
   progress_path: ./train_progress
-  plot_epochs: 10
+  plot_epochs: 30
 model:
   architecture:
     encoder:

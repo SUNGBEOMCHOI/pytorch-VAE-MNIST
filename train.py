@@ -99,7 +99,7 @@ def validation(model, validation_loader, criterion_list, alpha, device):
             output = model.decoding(z)
 
             reconstruction_loss = reconstruction_criterion(output.detach(), target.detach())
-            regularization_loss = regularization_criterion(mean.detach(), std.detach())
+            regularization_loss = regularization_criterion(mean.detach(), log_var.detach())
             loss = reconstruction_loss + alpha * regularization_loss
         total_loss += loss.item()
     total_loss /= len(validation_loader)
