@@ -42,7 +42,9 @@ def test(args, cfg):
     for inputs, targets in test_loader:
         inputs, targets = inputs.to(device), targets.to(device)
         with torch.no_grad():
-            outputs = model(inputs)
+            # outputs = model(inputs)
+            mean, _ = model.encoding(inputs)
+            outputs = model.decoding(mean)
         
         for idx, target in enumerate(targets):
             origin_images[int(target)].append(inputs[idx].detach().cpu().numpy()[0])

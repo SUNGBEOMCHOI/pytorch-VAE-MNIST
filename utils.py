@@ -39,8 +39,8 @@ def loss_func(loss_name_list):
         loss_func_list.append(loss)
     return loss_func_list
 
-def regularization_loss(mean, std):
-    return torch.mean(0.5*(torch.pow(mean, 2) + torch.pow(std, 2) - torch.log(torch.pow(std, 2)) - 1))
+def regularization_loss(mean, log_var):
+    return torch.mean(0.5*(torch.pow(mean, 2) - log_var + torch.exp(log_var) - 1))
 
 
 def optim_func(model, cfg):

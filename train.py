@@ -39,7 +39,7 @@ def train(args, cfg):
     train_loader = get_dataloader(train_dataset, batch_size, train=True)
     valid_loader = get_dataloader(valid_dataset, batch_size, train=False)
     criterion_list = loss_func(loss_name_list)
-    reconstruction_criterion, regularization__criterion = criterion_list
+    reconstruction_criterion, regularization_criterion = criterion_list
     optimizer = optim_func(model, optim_cfg)
     lr_scheduler = lr_scheduler_func(optimizer, lr_scheduler_cfg)
     history = {'train':[], 'validation':[]} # for saving loss
@@ -64,12 +64,12 @@ def train(args, cfg):
         total_loss = 0.0
         for input, _ in train_loader:
             input, target = input.to(device), input.to(device)
-            mean, std = model.encoding(input.detach())
-            z = model.add_noise(mean, std)
+            mean, log_var = model.encoding(input.detach())
+            z = model.add_noise(mean, log_var)
             output = model.decoding(z)
 
             reconstruction_loss = reconstruction_criterion(output, target.detach())
-            regularization_loss = regularization__criterion(mean, std)
+            regularization_loss = regularization_criterion(mean, log_var)
             loss = reconstruction_loss + alpha * regularization_loss
 
             optimizer.zero_grad()
@@ -94,8 +94,8 @@ def validation(model, validation_loader, criterion_list, alpha, device):
     for input, _ in validation_loader:
         input, target = input.to(device), input.to(device)
         with torch.no_grad():
-            mean, std = model.encoding(input)
-            z = model.add_noise(mean, std)
+            mean, log_var = model.encoding(input)
+            z = model.add_noise(mean, log_var)
             output = model.decoding(z)
 
             reconstruction_loss = reconstruction_criterion(output.detach(), target.detach())

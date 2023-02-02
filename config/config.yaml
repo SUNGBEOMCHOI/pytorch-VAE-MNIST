@@ -1,4 +1,4 @@
-device: cpu
+device: cuda
 train:
   batch_size: 128
   train_epochs: 90
@@ -51,16 +51,16 @@ model:
             args: [128, 32]
         - ReLU:
         - Linear:
-            args: [32, 4]
+            args: [32, 2]
       std:
         - Linear:
             args: [128, 32]
         - ReLU:
         - Linear:
-            args: [32, 4]
+            args: [32, 2]
     decoder:
       - Linear:
-          args: [4, 32]
+          args: [2, 32]
       - ReLU:
       - Linear:
           args: [32, 128]
@@ -71,11 +71,15 @@ model:
           args: [32, 32]
           kernel_size: 5
           stride: 2
+      - BatchNorm2d:
+          args: [32]
       - ConvTranspose2d:
           args: [32, 16]
           kernel_size: 4
           stride: 2
           padding: 1
+      - BatchNorm2d:
+          args: [16]
       - ConvTranspose2d:
           args: [16, 1]
           kernel_size: 4
@@ -84,4 +88,4 @@ model:
       - Sigmoid:
 test:
   batch_size: 256
-  model_path: ./test/pretrained/model_90.pt
+  model_path: ./pretrained/model_90.pt

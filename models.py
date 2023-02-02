@@ -18,13 +18,13 @@ class Model(nn.Module):
 
         self.decoder = build_network(architecture_decoder)
 
-        self.mean, self.std, self.output = None, None, None
+        self.mean, self.log_var, self.output = None, None, None
 
     def forward(self, x):
         if isinstance(x, np.ndarray):
             x = torch.from_numpy(x)
-        self.mean, self.std = self.encoding(x)
-        z = self.add_noise(self.mean, self.std)
+        self.mean, self.log_var = self.encoding(x)
+        z = self.add_noise(self.mean, self.log_var)
         output = self.decoding(z)
 
         return output
@@ -33,9 +33,9 @@ class Model(nn.Module):
         x = x.to(self.device)
         x = self.encoder_conv(x)
         self.mean = self.encoder_mean(x)
-        self.std = self.encoder_std(x)
+        self.log_var = self.encoder_std(x)
 
-        return self.mean, self.std
+        return self.mean, self.log_var
 
     def decoding(self, x):
         x = x.to(self.device)
@@ -43,14 +43,8 @@ class Model(nn.Module):
 
         return self.output
 
-    def add_noise(self, mean, std):
-        noise = torch.normal(0, 1, size=std.shape, device=self.device)
+    def add_noise(self, mean, log_var):
+        noise = torch.normal(0, 1, size=log_var.shape, device=self.device)
+        std = torch.exp(0.5*log_var)
         return mean + std * noise
-
-# if __name__ == '__main__':
-#     with open('./config/config.yaml') as f:
-#         cfg = yaml.safe_load(f)
-#     model = Model(cfg['model'])
-#     data = torch.randn((1, 1, 28, 28))
-#     print(model(data))
     
