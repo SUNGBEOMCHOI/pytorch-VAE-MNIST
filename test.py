@@ -40,6 +40,7 @@ def test(args, cfg):
     ########################
     #      Test model      #
     ########################
+    model.eval()
     for inputs, targets in test_loader:
         inputs, targets = inputs.to(device), targets.to(device)
         with torch.no_grad():

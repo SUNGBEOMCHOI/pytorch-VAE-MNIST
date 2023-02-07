@@ -44,7 +44,6 @@ model:
             stride: 2
         - BatchNorm2d:
             args: [32]
-        - ReLU:
         - Flatten:
       mean:
         - Linear:
@@ -73,6 +72,7 @@ model:
           stride: 2
       - BatchNorm2d:
           args: [32]
+      - ReLU:
       - ConvTranspose2d:
           args: [32, 16]
           kernel_size: 4
@@ -80,6 +80,7 @@ model:
           padding: 1
       - BatchNorm2d:
           args: [16]
+      - ReLU:
       - ConvTranspose2d:
           args: [16, 1]
           kernel_size: 4

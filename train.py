@@ -62,6 +62,7 @@ def train(args, cfg):
     ########################
     for epoch in range(start_epoch, train_epochs+1):
         total_loss = 0.0
+        model.train()
         for input, _ in train_loader:
             input, target = input.to(device), input.to(device)
             mean, log_var = model.encoding(input.detach())
@@ -90,6 +91,7 @@ def train(args, cfg):
 def validation(model, validation_loader, criterion_list, alpha, device):
     total_loss = 0.0
     reconstruction_criterion, regularization_criterion = criterion_list
+    model.eval()
 
     for input, _ in validation_loader:
         input, target = input.to(device), input.to(device)
