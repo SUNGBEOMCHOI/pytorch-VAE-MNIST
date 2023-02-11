@@ -123,14 +123,14 @@ python train.py --config $CONFIGURATION_PATH --pretrained $PRETRAINED_PATH
 ### Reconstuction Evaluation
 Evaluate whether the input image is restored again through encoding and decoding
 
-![alt text](https://github.com/SUNGBEOMCHOI/pytorch-VAE/blob/master/results/reconstruction.png)
+![alt text](https://github.com/SUNGBEOMCHOI/pytorch-VAE/blob/master/results/reconstruction.png?raw=true)
 
 ### Random Generation Evaluation
 Evaluate whether images are well generated from random values
 
-![alt text](https://github.com/SUNGBEOMCHOI/pytorch-VAE/blob/master/results/random_generation.png)
+![alt text](https://github.com/SUNGBEOMCHOI/pytorch-VAE/blob/master/results/random_generation.png?raw=true)
 
 ### Distribution of latent vector
 Plot encoded latent vector of input images
 
-![alt text](https://github.com/SUNGBEOMCHOI/pytorch-VAE/blob/master/results/embedding.png)
+![alt text](https://github.com/SUNGBEOMCHOI/pytorch-VAE/blob/master/results/embedding.png?raw=true)
