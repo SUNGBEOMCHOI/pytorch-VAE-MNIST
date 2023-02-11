@@ -17,7 +17,7 @@ def loss_func(loss_name_list):
         loss_name_list: List contains loss name
 
     Returns:
-        loss_func_list: List contrains torch loss
+        loss_func_list: List contains torch loss
     """
     loss_func_list = []
     for loss_name in loss_name_list:
@@ -40,6 +40,16 @@ def loss_func(loss_name_list):
     return loss_func_list
 
 def regularization_loss(mean, log_var):
+    """
+    Regularization loss of VAE
+
+    Args:
+        mean: Torch tensor contains mean
+        log_var: Torch tensor contains log of variance
+
+    Returns:
+        Regularization loss
+    """
     return torch.mean(0.5*(torch.pow(mean, 2) - log_var + torch.exp(log_var) - 1))
 
 
@@ -72,7 +82,7 @@ def lr_scheduler_func(optimizer, cfg):
     Return torch learning rate scheduler
 
     Args:
-        optimizer
+        optimizer: Torch optimizer
         cfg: Dictionary of learning rate scheduler configuration 
     
     Returns:
@@ -101,7 +111,7 @@ def plot_progress(history, epoch, file_path='./train_progress'):
     Args:
         history: Dictionary contains train/validation loss history
         epoch: Current train epoch
-        file_path: Path to save graph
+        file_path: Path to save matplot graph
     """
     plt.subplot(1, 2, 1)
     plt.plot(np.arange(1, epoch+1, dtype=np.int16), history['train'])
@@ -117,6 +127,9 @@ def plot_progress(history, epoch, file_path='./train_progress'):
     plt.close()
 
 class Builder(object):
+    """
+    Builder for make torch model from yaml file
+    """
     def __init__(self, *namespaces):
         self._namespace = collections.ChainMap(*namespaces)
 
@@ -177,8 +190,8 @@ def save_model(epoch, model, optimizer, history, lr_scheduler, file_path='./pret
     Args:
         epoch: Current epoch
         model: Trained model
-        optimizer
-        lr_scheduler
+        optimizer: Torch optimizer
+        lr_scheduler: Torch learning rate scheduler
         file_path: Path to save checkpoint
     """
     torch.save({
@@ -191,7 +204,7 @@ def save_model(epoch, model, optimizer, history, lr_scheduler, file_path='./pret
 
 def get_train_dataset():
     """
-    Return dataset for training and validation
+    Return dataset for train and validation, In this case retrn MNIST train dataset
 
     Args:
 
@@ -214,7 +227,7 @@ def get_train_dataset():
 
 def get_test_dataset():
     """
-    Return dataset for test
+    Return dataset for test, In this case return MNIST test dataset
 
     Args:
 
@@ -234,9 +247,10 @@ def get_dataloader(dataset, batch_size, train=True):
     Args:
         dataset: List of torch dataset
         batch_size
+        train: Boolean of train or test phase, If true, return dataset of shuffling and drop last batch
 
     Returns:
-        data_loader: List of torch data loader
+        data_loader: Torch data loader
     """
     if train:
         shuffle = True

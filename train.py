@@ -31,6 +31,7 @@ def train(args, cfg):
     #      Make model      #
     ########################
     model = Model(model_cfg, device).to(device)
+    print(model)
 
     ########################
     #    train settings    #
@@ -89,6 +90,19 @@ def train(args, cfg):
         lr_scheduler.step()
 
 def validation(model, validation_loader, criterion_list, alpha, device):
+    """
+    Validation trained model
+
+    Args:
+        model: Trained model
+        validation_loader: Torch dataloader of validation dataset
+        criterion_list: List contains torch loss
+        alpha: Weight of regularization loss
+        device: Torch device
+
+    Returns:
+        total_loss: Validation loss
+    """
     total_loss = 0.0
     reconstruction_criterion, regularization_criterion = criterion_list
     model.eval()
