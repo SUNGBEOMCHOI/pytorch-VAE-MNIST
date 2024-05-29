@@ -1,4 +1,4 @@
-# pytorch-mnist-VAE
+# Pytorch-VAE-MNIST
 ## About VAE
 VAE consists of two main components: an encoder and a decoder. The encoder takes in data points and maps them to a lower-dimensional representation, known as a latent space. The decoder then takes this latent representation and maps it back to the original data space.
 
