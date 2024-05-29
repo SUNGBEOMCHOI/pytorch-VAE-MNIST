@@ -105,18 +105,12 @@ test:
 Use the code below to continue learning from the pretrained model.
 
 ```
-CONFIGURATION_PATH = './config/config.yaml'
-PRETRAINED_PATH = '...'
-
-python train.py --config $CONFIGURATION_PATH --resume $PRETRAINED_PATH
+python train.py --config './config/config.yaml'
 ```
 
 ### Run Evaluation
 ```
-CONFIGURATION_PATH = './config/config.yaml'
-PRETRAINED_PATH = './pretrained/model_90.pt'
-
-python train.py --config $CONFIGURATION_PATH --pretrained $PRETRAINED_PATH
+python test.py --config './config/config.yaml'
 ```
 
 ## Results
